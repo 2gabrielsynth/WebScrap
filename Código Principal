@@ -1,1 +1,48 @@
+#   Progrma para previsão do tempo, colhendo os dados do site g1
 
+from selenium import webdriver
+from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.common.by import By
+import time
+
+
+def _Loading(tempo_espera):
+    for segundos_restantes in range(tempo_espera, 5, -1):
+        print(f"""Carregando... Tempo total estimado: 12 segundos.
+              Tempo restante: {segundos_restantes} segundos""" )
+        
+        time.sleep(1)
+
+def _previsão():
+
+    while True:
+        cidade = input("Digite a Cidade: ")
+        cidade = cidade.replace(" ","-")  
+        Uf_estado = input("Digite a sigla do Estado: ")
+
+        tempo_espera = 10 
+        _Loading(tempo_espera)
+
+        firefox_options = Options()
+        firefox_options.add_argument('-headless')
+
+        driver = webdriver.Firefox(options=firefox_options)
+
+        #site do g1, onde colho as informações de algum elemento html 
+        driver.get(f'https://g1.globo.com/previsao-do-tempo/{Uf_estado}/{cidade}.ghtml')    
+
+        elemento = driver.find_element(By.XPATH,'/html/body/div[2]/div[2]/div[1]/div[1]/p[3]') 
+
+        texto = elemento.text
+
+        escolha = input(f"""{texto}
+                        
+                        Deseja consiltar a previsão em outra cidade? "S" para sim ou "N" para não: """)
+        if escolha.upper() != 'S':
+            driver.quit()
+            print("Aplicação encerrada.")
+            break
+
+_previsão()
+
+    
